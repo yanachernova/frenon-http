@@ -2,7 +2,7 @@
 
 const https = require('https');
 
-const doRequest= (options, data) => {
+const doRequest = (options, data) => {
   return new Promise((resolve, reject) => {
     const req = https.request(options, (res) => {
       console.log('STATUS: ' + res.statusCode);
@@ -26,36 +26,41 @@ const doRequest= (options, data) => {
   });
 }
 
-const getApi = async (substr)=>{
-    try {
-        const data = JSON.stringify({});
-        const options = {
-            hostname: 'jsonmock.hackerrank.com',
-            port: 443,
-            path: `/api/movies/search/?Title=${substr}`,
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-        };
-        return await doRequest(options, data);
-    }catch(err) {
-        return err
-    }    
-    
+const getApi = async (substr) => {
+  try {
+    const data = JSON.stringify({});
+    const options = {
+      hostname: 'jsonmock.hackerrank.com',
+      port: 443,
+      path: `/api/movies/search/?Title=${substr}`,
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    };
+    return await doRequest(options, data);
+  } catch (err) {
+    return err
+  }
+
 }
 
 const getMovieTitles = async (substr) => {
-    try{
-        const uri = `https://jsonmock.hackerrank.com/api/movies/search/?Title=${substr}`;
-        const getdata = await getApi(substr);
-        console.log('--getdata--', getdata);
-        return getdata;
+  try {
+    const uri = `https://jsonmock.hackerrank.com/api/movies/search/?Title=${substr}`;
+    const getdata = await getApi(substr);
 
-    } catch (error) {
+    console.log('--getdata--', getdata);
+    const { data } = getdata
+    return data;
+
+  } catch (error) {
     return error;
-    }
+  }
 }
 
 const titles = getMovieTitles('spiderman')
-.then( (response)=> console.log('--response--', response) )
+  .then((response) =>
+    response.map((item) => item.Title).sort()
+  )
+console.log(titles);
